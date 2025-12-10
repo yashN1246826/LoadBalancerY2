@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.layout.VBox?>
+
+<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="com.mycompany.loadbalancer.Primary1Controller"
+          hgap="15" vgap="15" alignment="CENTER"
+          prefWidth="600" prefHeight="500"
+          style="-fx-background-color: #f4f4f4; -fx-padding: 20px; -fx-border-color: #ccc; -fx-border-width: 2px; -fx-border-radius: 10px;">
+
+    <!-- Column Constraints -->
+    <columnConstraints>
+        <ColumnConstraints minWidth="150" halignment="RIGHT"/>
+        <ColumnConstraints minWidth="250" hgrow="ALWAYS"/>
+        <ColumnConstraints minWidth="150" halignment="CENTER"/>
+        <ColumnConstraints minWidth="150" halignment="CENTER"/>
+    </columnConstraints>
+
+    <!-- File Transfer Section -->
+    <Label text="Select File to Transfer:" GridPane.columnIndex="0" GridPane.rowIndex="0"
+           style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+    <ListView fx:id="fileListView" prefWidth="350" prefHeight="120"
+              GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="0"/>
+    
+    <Button text="Browse..." fx:id="browseButton" onAction="#handleBrowse"
+            GridPane.columnIndex="0" GridPane.rowIndex="1"
+            style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+    
+    <Button text="Start Transfer" fx:id="transferButton" onAction="#handleTransfer"
+            GridPane.columnIndex="1" GridPane.rowIndex="1"
+            style="-fx-background-color: #008CBA; -fx-text-fill: white;"/>
+    <Button text="Download" fx:id="downloadButton" onAction="#handleDownload"
+        GridPane.columnIndex="3" GridPane.rowIndex="2"
+        style="-fx-background-color: #32CD32; -fx-text-fill: white;"/>
+
+    
+    <Button text="Health Check" fx:id="healthCheckButton" onAction="#handleCheckHealthyContainers"
+            GridPane.columnIndex="2" GridPane.rowIndex="1"
+            style="-fx-background-color: #17A2B8; -fx-text-fill: white;"/>
+    
+    
+
+    <Label text="Select Scheduling Algorithm:" GridPane.columnIndex="0" GridPane.rowIndex="2"
+           style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+    <ChoiceBox fx:id="schedulingChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="2"
+               prefWidth="200"/>
+
+    <!-- Terminal Section -->
+    <Label text="Terminal Emulator:" GridPane.columnIndex="0" GridPane.rowIndex="3"
+           style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+    <TextField fx:id="commandInput" promptText="Enter command (mv, cp, ls, mkdir, ps, whoami, tree, nano)"
+               GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    
+    <Button text="Execute" fx:id="executeButton" onAction="#handleExecuteCommand"
+            GridPane.columnIndex="1" GridPane.rowIndex="4"
+            style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
+
+    <!-- Terminal Output Area -->
+    <TextArea fx:id="terminalOutput" editable="false" wrapText="true" prefWidth="500" prefHeight="150"
+              GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="5"/>
+    
+    <!-- Remote Terminal Section -->
+    <Label text="Remote Terminal Access:" GridPane.columnIndex="0" GridPane.rowIndex="6"
+       style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+    <ChoiceBox fx:id="containerChoiceBox" GridPane.columnIndex="0" GridPane.rowIndex="7"
+           prefWidth="200" />
+
+    <TextField fx:id="remoteCommandInput" promptText="Enter command to execute remotely"
+           GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+    <Button text="Run Command" fx:id="executeRemoteButton" onAction="#handleExecuteRemoteCommand"
+        GridPane.columnIndex="2" GridPane.rowIndex="7"
+        style="-fx-background-color: #008CBA; -fx-text-fill: white;"/>
+
+    <TextArea fx:id="remoteTerminalOutput" editable="false" wrapText="true" prefWidth="500" prefHeight="150"
+          GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="8"/>
+
+    <!-- Performance Metrics Section (Horizontally Aligned at Bottom) -->
+<GridPane GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="14"
+          hgap="20" alignment="CENTER"
+          style="-fx-padding: 10px; -fx-border-color: #ccc; -fx-border-width: 1px; -fx-border-radius: 5px;">
+
+    <Label text="System Performance Metrics:" 
+           GridPane.columnIndex="0" 
+           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+
+    <Label text="CPU Usage:" GridPane.columnIndex="1"/>
+    <Label fx:id="cpuUsageLabel" text="Loading..." GridPane.columnIndex="2"/>
+
+    <Label text="Memory Usage:" GridPane.columnIndex="3"/>
+    <Label fx:id="memoryUsageLabel" text="Loading..." GridPane.columnIndex="4"/>
+
+    <Label text="File Transfer Speed:" GridPane.columnIndex="5"/>
+    <Label fx:id="transferSpeedLabel" text="Waiting..." GridPane.columnIndex="6"/>
+
+    <Label text="Active Containers:" GridPane.columnIndex="7"/>
+    <Label fx:id="activeContainersLabel" text="Fetching..." GridPane.columnIndex="8"/>
+</GridPane>
+
+
+    
+</GridPane>

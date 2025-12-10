@@ -1,0 +1,135 @@
+package com.mycompany.javafxapplication1;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import java.io.IOException;
+
+public class PrimaryController {
+
+    @FXML
+    private Button registerBtn;
+
+    @FXML
+    private Button loginBtn;
+
+    @FXML
+    private TextField userTextField;
+
+    @FXML
+    private PasswordField passPasswordField;
+
+    @FXML
+    private TextField masterKeyField;
+
+    @FXML
+    private Button adminLoginBtn;
+
+    private DB database;
+
+    public void initialize() {
+        database = new DB();
+    }
+
+    /**
+     * Handles the Register button event.
+     */
+    @FXML
+    private void registerBtnHandler(ActionEvent event) {
+        switchScene("register.fxml", "Register a New User", registerBtn);
+    }
+
+    /**
+     * Handles the Login button event for both standard users and admins.
+     */
+    @FXML
+    private void switchToSecondary(ActionEvent event) {
+        String username = userTextField.getText().trim();
+        String password = passPasswordField.getText().trim();
+        String masterKey = masterKeyField.getText().trim();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            showAlert(AlertType.ERROR, "Login Failed", "Username and password cannot be empty.");
+            return;
+        }
+
+        // ✅ Handle Master Key Login for Admins
+        if (!masterKey.isEmpty() && database.validateMasterKeyLogin(masterKey)) {
+            SessionManager.setLoggedIn(username, "admin"); // Store as admin
+            switchSceneWithData("secondary.fxml", "Admin Dashboard", loginBtn, username);
+            return;
+        }
+
+        // ✅ Validate Standard Login
+        if (database.validateUserLogin(username, password)) {
+            String role = database.getUserRole(username);
+            SessionManager.setLoggedIn(username, role); // Store role in session
+            switchSceneWithData("secondary.fxml", "User Dashboard", loginBtn, username);
+        } else {
+            showAlert(AlertType.ERROR, "Invalid Credentials", "Incorrect username or password. Please try again.");
+        }
+    }
+
+    /**
+     * Determines if the current logged-in user is an Admin.
+     */
+    public boolean isAdmin() {
+        return "admin".equals(SessionManager.getLoggedInRole());
+    }
+
+    /**
+     * Displays an alert message.
+     */
+    private void showAlert(AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    /**
+     * Switches scenes without passing data.
+     */
+    private void switchScene(String fxmlFile, String title, Button sourceButton) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            Parent root = loader.load();
+            Stage stage = (Stage) sourceButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 640, 480));
+            stage.setTitle(title);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Switches scenes and passes user data to the secondary controller.
+     */
+    private void switchSceneWithData(String fxmlFile, String title, Button sourceButton, String username) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            Parent root = loader.load();
+            SecondaryController controller = loader.getController();
+            controller.initialise(new String[]{username});
+
+            Stage stage = (Stage) sourceButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 640, 480));
+            stage.setTitle(title);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
